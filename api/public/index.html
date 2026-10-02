@@ -1,8 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AK AI Tools - AI Photo, AI Video, Prompt Creator and Image Edit">
   <title>AK AI Tools</title>
 
   <style>
@@ -119,6 +121,11 @@
       opacity: 0.9;
     }
 
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     .secondary {
       background: #1d263c;
       border-color: #39445f;
@@ -137,6 +144,17 @@
       margin-top: 15px;
     }
 
+    .download-btn {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 12px 18px;
+      background: #16a34a;
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
     .hidden {
       display: none;
     }
@@ -145,6 +163,15 @@
       margin-top: 15px;
       color: #aeb7d0;
       white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .error {
+      color: #ff7b7b;
+    }
+
+    .success {
+      color: #72e6a2;
     }
 
     @media (max-width: 700px) {
@@ -183,7 +210,7 @@
 
   <div class="card">
 
-    <label><b>Enter your prompt</b></label>
+    <label for="prompt"><b>Enter your prompt</b></label>
 
     <textarea
       id="prompt"
@@ -220,7 +247,7 @@
     </div>
 
     <div id="referenceBox" class="hidden">
-      <label><b>Reference Image</b></label>
+      <label for="reference"><b>Reference Image</b></label>
       <input id="reference" type="file" accept="image/*">
     </div>
 
@@ -242,191 +269,448 @@
 
 <script>
   const tabs = document.querySelectorAll(".tab");
+
   const promptInput = document.getElementById("prompt");
   const generateBtn = document.getElementById("generateBtn");
   const improveBtn = document.getElementById("improveBtn");
+
   const referenceBox = document.getElementById("referenceBox");
   const referenceInput = document.getElementById("reference");
+
   const statusBox = document.getElementById("status");
   const resultBox = document.getElementById("result");
+
   const ratio = document.getElementById("ratio");
+  const quality = document.getElementById("quality");
   const style = document.getElementById("style");
   const duration = document.getElementById("duration");
 
   let currentMode = "photo";
 
+
+  // =========================
+  // TAB SWITCHING
+  // =========================
+
   tabs.forEach(tab => {
+
     tab.addEventListener("click", () => {
 
       tabs.forEach(t => t.classList.remove("active"));
+
       tab.classList.add("active");
 
       currentMode = tab.dataset.mode;
 
       resultBox.innerHTML = "";
       statusBox.textContent = "";
+      statusBox.className = "status";
 
       if (currentMode === "edit") {
+
         referenceBox.classList.remove("hidden");
+
         generateBtn.textContent = "Edit Image";
+
       }
 
       else if (currentMode === "video") {
+
         referenceBox.classList.add("hidden");
+
         generateBtn.textContent = "Generate AI Video";
+
       }
 
       else if (currentMode === "prompt") {
+
         referenceBox.classList.add("hidden");
+
         generateBtn.textContent = "Create Prompt";
+
       }
 
       else {
+
         referenceBox.classList.add("hidden");
+
         generateBtn.textContent = "Generate AI Photo";
+
       }
+
     });
+
   });
+
+
+  // =========================
+  // IMPROVE PROMPT
+  // =========================
 
   improveBtn.addEventListener("click", async () => {
 
     const prompt = promptInput.value.trim();
 
     if (!prompt) {
+
       statusBox.textContent = "Please enter a prompt first.";
+      statusBox.className = "status error";
+
       return;
     }
 
+    improveBtn.disabled = true;
+
     statusBox.textContent = "Improving prompt...";
+    statusBox.className = "status";
+
 
     try {
 
       const response = await fetch("/api/improve-prompt", {
+
         method: "POST",
+
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ prompt })
+
+        body: JSON.stringify({
+          prompt: prompt
+        })
+
       });
 
-      const data = await response.json();
+
+      const data = await response.json().catch(() => ({}));
+
 
       if (!response.ok) {
-        throw new Error(data.error || "Prompt improvement failed");
+
+        throw new Error(
+          data.error ||
+          `Server error: ${response.status}`
+        );
+
       }
 
-      promptInput.value = data.prompt;
-      statusBox.textContent = "Prompt improved successfully.";
 
-    } catch (error) {
-      statusBox.textContent = error.message;
+      if (!data.prompt) {
+
+        throw new Error(
+          "The server did not return an improved prompt."
+        );
+
+      }
+
+
+      promptInput.value = data.prompt;
+
+      statusBox.textContent =
+        "Prompt improved successfully.";
+
+      statusBox.className = "status success";
+
+
     }
+
+    catch (error) {
+
+      console.error("Improve Prompt Error:", error);
+
+      statusBox.textContent =
+        error.message ||
+        "Prompt improvement failed.";
+
+      statusBox.className = "status error";
+
+    }
+
+    finally {
+
+      improveBtn.disabled = false;
+
+    }
+
   });
+
+
+  // =========================
+  // GENERATE
+  // =========================
 
   generateBtn.addEventListener("click", async () => {
 
     const prompt = promptInput.value.trim();
 
+
     if (!prompt) {
-      statusBox.textContent = "Please enter a prompt.";
+
+      statusBox.textContent =
+        "Please enter a prompt.";
+
+      statusBox.className = "status error";
+
       return;
+
     }
 
+
     resultBox.innerHTML = "";
-    statusBox.textContent = "Processing...";
+
+    statusBox.textContent =
+      "Processing... Please wait.";
+
+    statusBox.className = "status";
+
+
+    generateBtn.disabled = true;
+
 
     try {
 
+
+      // =========================
+      // AI PHOTO
+      // =========================
+
       if (currentMode === "photo") {
 
-        const response = await fetch("/api/generate-image", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            prompt:
-              prompt +
-              "\nStyle: " + style.value,
-            size: ratio.value
-          })
-        });
+        const finalPrompt =
+          prompt +
+          "\n\nVisual style: " +
+          style.value +
+          "\nQuality: " +
+          quality.value;
 
-        const data = await response.json();
+
+        const response = await fetch(
+          "/api/generate-image",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+              prompt: finalPrompt,
+
+              size: ratio.value
+
+            })
+
+          }
+        );
+
+
+        const data =
+          await response.json().catch(() => ({}));
+
 
         if (!response.ok) {
-          throw new Error(data.error || "Image generation failed");
+
+          throw new Error(
+            data.error ||
+            `Image API error: ${response.status}`
+          );
+
         }
 
-        const img = document.createElement("img");
+
+        if (!data.image) {
+
+          throw new Error(
+            "AI did not return an image."
+          );
+
+        }
+
+
+        const img =
+          document.createElement("img");
+
         img.src = data.image;
 
-        const download = document.createElement("a");
+        img.alt =
+          "AK AI Tools generated image";
+
+
+        const download =
+          document.createElement("a");
+
         download.href = data.image;
-        download.download = "ak-ai-generated.png";
-        download.textContent = "Download Image";
-        download.style.display = "block";
-        download.style.marginTop = "12px";
+
+        download.download =
+          "ak-ai-generated.png";
+
+        download.textContent =
+          "⬇ Download Image";
+
+        download.className =
+          "download-btn";
+
 
         resultBox.appendChild(img);
+
         resultBox.appendChild(download);
 
-        statusBox.textContent = "Image generated successfully.";
+
+        statusBox.textContent =
+          "Image generated successfully.";
+
+        statusBox.className =
+          "status success";
 
       }
+
+
+      // =========================
+      // IMAGE EDIT
+      // =========================
 
       else if (currentMode === "edit") {
 
-        const file = referenceInput.files[0];
+        const file =
+          referenceInput.files[0];
+
 
         if (!file) {
-          throw new Error("Please select a reference image.");
+
+          throw new Error(
+            "Please select a reference image."
+          );
+
         }
 
+
         statusBox.textContent =
-          "Image editing request prepared. The current backend requires an image upload format supported by the provider.";
+          "Image editing API is not connected yet.";
+
+        statusBox.className =
+          "status";
+
+
+        const img =
+          document.createElement("img");
+
+        img.src =
+          URL.createObjectURL(file);
+
+        img.alt =
+          "Reference image";
+
+
+        resultBox.appendChild(img);
 
       }
+
+
+      // =========================
+      // VIDEO
+      // =========================
 
       else if (currentMode === "video") {
 
         statusBox.textContent =
-          "Video generation API is not connected yet. We will connect a real video provider next.";
+          "Video generation API is not connected yet.";
+
+        statusBox.className =
+          "status";
 
       }
+
+
+      // =========================
+      // PROMPT CREATOR
+      // =========================
 
       else if (currentMode === "prompt") {
 
-        const response = await fetch("/api/improve-prompt", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ prompt })
-        });
+        const response = await fetch(
+          "/api/improve-prompt",
+          {
+            method: "POST",
 
-        const data = await response.json();
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+              prompt: prompt
+            })
+
+          }
+        );
+
+
+        const data =
+          await response.json().catch(() => ({}));
+
 
         if (!response.ok) {
-          throw new Error(data.error || "Prompt creation failed");
+
+          throw new Error(
+            data.error ||
+            `Prompt API error: ${response.status}`
+          );
+
         }
 
-        promptInput.value = data.prompt;
-        statusBox.textContent = "Professional prompt created.";
+
+        if (!data.prompt) {
+
+          throw new Error(
+            "No prompt was returned."
+          );
+
+        }
+
+
+        promptInput.value =
+          data.prompt;
+
+
+        statusBox.textContent =
+          "Professional prompt created.";
+
+        statusBox.className =
+          "status success";
 
       }
 
-    } catch (error) {
+    }
 
-      console.error(error);
+
+    catch (error) {
+
+      console.error(
+        "AK AI Tools Error:",
+        error
+      );
+
 
       statusBox.textContent =
-        error.message || "Something went wrong.";
+        error.message ||
+        "Something went wrong.";
+
+      statusBox.className =
+        "status error";
+
+    }
+
+
+    finally {
+
+      generateBtn.disabled = false;
 
     }
 
   });
+
 </script>
 
 </body>
 </html>
+```
