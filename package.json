@@ -1,1 +1,11 @@
-{"name":"ak-ai-tools","version":"1.0.0","private":true,"engines":{"node":"22.x"}}
+{
+  "name": "ak-ai-tools",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "openai": "^7.23.0"
+  }
+}
