@@ -1,227 +1,733 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AK AI Tools</title>
-  <style>
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,sans-serif;background:#0b1020;color:#fff}
-    .container{max-width:1000px;margin:auto;padding:20px}
-    header{text-align:center;padding:25px 10px}
-    h1{margin:0;font-size:36px}
-    .subtitle{color:#aeb7d0;margin-top:8px}
-    .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
-    button,select{padding:13px;border-radius:10px;border:1px solid #39445f;background:#151c31;color:#fff;font-size:15px}
-    button{cursor:pointer;font-weight:bold;background:#2563eb}
-    .tab.active{background:#2563eb}
-    .card{background:#11182b;border:1px solid #29334d;border-radius:16px;padding:20px}
-    textarea{width:100%;min-height:150px;padding:15px;border-radius:10px;background:#080d19;color:#fff;border:1px solid #39445f;font-size:16px}
-    input[type=file]{width:100%;padding:12px;margin-top:10px;background:#080d19;color:#fff;border:1px solid #39445f;border-radius:10px}
-    .options{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}
-    .secondary{background:#1d263c}
-    .result{text-align:center;margin-top:20px}
-    .result img{max-width:100%;max-height:600px;border-radius:12px}
-    .result a{display:block;margin-top:12px;color:#7db2ff}
-    .status{margin-top:15px;color:#aeb7d0;white-space:pre-wrap}
-    .hidden{display:none}
-    @media(max-width:700px){
-      .tabs{grid-template-columns:repeat(2,1fr)}
-      .options{grid-template-columns:repeat(2,1fr)}
-      h1{font-size:28px}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AK AI Tools</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#0b1020;
+  color:#fff;
+}
+
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+
+header{
+  text-align:center;
+  padding:25px 10px;
+}
+
+h1{
+  margin:0;
+  font-size:36px;
+}
+
+.subtitle{
+  color:#aeb7d0;
+  margin-top:8px;
+}
+
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin:20px 0;
+}
+
+button,select{
+  padding:13px;
+  border-radius:10px;
+  border:1px solid #39445f;
+  background:#151c31;
+  color:#fff;
+  font-size:15px;
+}
+
+button{
+  cursor:pointer;
+  font-weight:bold;
+  background:#2563eb;
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.tab.active{
+  background:#2563eb;
+}
+
+.card{
+  background:#11182b;
+  border:1px solid #29334d;
+  border-radius:16px;
+  padding:20px;
+}
+
+textarea{
+  width:100%;
+  min-height:150px;
+  padding:15px;
+  border-radius:10px;
+  background:#080d19;
+  color:#fff;
+  border:1px solid #39445f;
+  font-size:16px;
+  resize:vertical;
+}
+
+input[type=file]{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  background:#080d19;
+  color:#fff;
+  border:1px solid #39445f;
+  border-radius:10px;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin:15px 0;
+}
+
+.secondary{
+  background:#1d263c;
+}
+
+.result{
+  text-align:center;
+  margin-top:20px;
+}
+
+.result img{
+  max-width:100%;
+  max-height:600px;
+  border-radius:12px;
+}
+
+.result a{
+  display:block;
+  margin-top:12px;
+  color:#7db2ff;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.status{
+  margin-top:15px;
+  color:#aeb7d0;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.hidden{
+  display:none;
+}
+
+@media(max-width:700px){
+
+  .tabs{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .options{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  h1{
+    font-size:28px;
+  }
+
+}
+</style>
 </head>
 
 <body>
+
 <div class="container">
 
 <header>
-  <h1>AK AI Tools</h1>
-  <div class="subtitle">AI Photo • AI Video • Prompt Creator • Image Edit</div>
+
+<h1>AK AI Tools</h1>
+
+<div class="subtitle">
+AI Photo • AI Video • Prompt Creator • Image Edit
+</div>
+
 </header>
 
+
 <div class="tabs">
-  <button class="tab active" data-mode="photo">AI Photo</button>
-  <button class="tab" data-mode="video">AI Video</button>
-  <button class="tab" data-mode="edit">Image Edit</button>
-  <button class="tab" data-mode="prompt">Prompt Creator</button>
+
+<button class="tab active" data-mode="photo">
+AI Photo
+</button>
+
+<button class="tab" data-mode="video">
+AI Video
+</button>
+
+<button class="tab" data-mode="edit">
+Image Edit
+</button>
+
+<button class="tab" data-mode="prompt">
+Prompt Creator
+</button>
+
 </div>
+
 
 <div class="card">
 
-  <textarea id="prompt" placeholder="Enter your AI prompt..."></textarea>
+<textarea
+id="prompt"
+placeholder="Enter your AI prompt..."
+></textarea>
 
-  <div class="options">
-    <select id="ratio">
-      <option value="1024x1024">1:1</option>
-      <option value="1024x1536">Portrait</option>
-      <option value="1536x1024">Landscape</option>
-    </select>
 
-    <select id="style">
-      <option>Realistic</option>
-      <option>Cinematic</option>
-      <option>Anime</option>
-      <option>3D</option>
-      <option>Artistic</option>
-    </select>
+<div class="options">
 
-    <select id="quality">
-      <option>Auto</option>
-      <option>High</option>
-    </select>
+<select id="ratio">
 
-    <select id="duration">
-      <option>5 Seconds</option>
-      <option>10 Seconds</option>
-      <option>15 Seconds</option>
-    </select>
-  </div>
+<option value="1024x1024">
+1:1
+</option>
 
-  <div id="referenceBox" class="hidden">
-    <input id="reference" type="file" accept="image/*">
-  </div>
+<option value="1024x1536">
+Portrait
+</option>
 
-  <button id="generateBtn">Generate AI Photo</button>
-  <button id="improveBtn" class="secondary" style="margin-top:10px">
-    Improve Prompt
-  </button>
+<option value="1536x1024">
+Landscape
+</option>
 
-  <div id="status" class="status"></div>
-  <div id="result" class="result"></div>
+</select>
+
+
+<select id="style">
+
+<option>
+Realistic
+</option>
+
+<option>
+Cinematic
+</option>
+
+<option>
+Anime
+</option>
+
+<option>
+3D
+</option>
+
+<option>
+Artistic
+</option>
+
+</select>
+
+
+<select id="quality">
+
+<option>
+Auto
+</option>
+
+<option>
+High
+</option>
+
+</select>
+
+
+<select id="duration">
+
+<option>
+5 Seconds
+</option>
+
+<option>
+10 Seconds
+</option>
+
+<option>
+15 Seconds
+</option>
+
+</select>
 
 </div>
+
+
+<div id="referenceBox" class="hidden">
+
+<input
+id="reference"
+type="file"
+accept="image/*"
+>
+
 </div>
+
+
+<button id="generateBtn">
+Generate AI Photo
+</button>
+
+
+<button
+id="improveBtn"
+class="secondary"
+style="margin-top:10px"
+>
+Improve Prompt
+</button>
+
+
+<div
+id="status"
+class="status"
+></div>
+
+
+<div
+id="result"
+class="result"
+></div>
+
+</div>
+
+</div>
+
 
 <script>
-const tabs=document.querySelectorAll(".tab");
-const promptInput=document.getElementById("prompt");
-const generateBtn=document.getElementById("generateBtn");
-const improveBtn=document.getElementById("improveBtn");
-const referenceBox=document.getElementById("referenceBox");
-const referenceInput=document.getElementById("reference");
-const statusBox=document.getElementById("status");
-const resultBox=document.getElementById("result");
-const ratio=document.getElementById("ratio");
-const style=document.getElementById("style");
 
-let mode="photo";
+const tabs =
+document.querySelectorAll(".tab");
 
-tabs.forEach(tab=>{
-  tab.onclick=()=>{
-    tabs.forEach(x=>x.classList.remove("active"));
+const promptInput =
+document.getElementById("prompt");
+
+const generateBtn =
+document.getElementById("generateBtn");
+
+const improveBtn =
+document.getElementById("improveBtn");
+
+const referenceBox =
+document.getElementById("referenceBox");
+
+const referenceInput =
+document.getElementById("reference");
+
+const statusBox =
+document.getElementById("status");
+
+const resultBox =
+document.getElementById("result");
+
+const ratio =
+document.getElementById("ratio");
+
+const style =
+document.getElementById("style");
+
+
+let mode = "photo";
+
+
+/* =========================
+   TAB SWITCHING
+========================= */
+
+tabs.forEach(tab => {
+
+  tab.onclick = () => {
+
+    tabs.forEach(x =>
+      x.classList.remove("active")
+    );
+
     tab.classList.add("active");
-    mode=tab.dataset.mode;
-    resultBox.innerHTML="";
-    statusBox.textContent="";
 
-    referenceBox.classList.toggle("hidden",mode!=="edit");
+    mode = tab.dataset.mode;
+
+    resultBox.innerHTML = "";
+
+    statusBox.textContent = "";
+
+    referenceBox.classList.toggle(
+      "hidden",
+      mode !== "edit"
+    );
+
 
     generateBtn.textContent =
-      mode==="photo" ? "Generate AI Photo" :
-      mode==="video" ? "Generate AI Video" :
-      mode==="edit" ? "Edit Image" :
-      "Create Prompt";
+      mode === "photo"
+        ? "Generate AI Photo"
+        : mode === "video"
+        ? "Generate AI Video"
+        : mode === "edit"
+        ? "Edit Image"
+        : "Create Prompt";
+
   };
+
 });
 
-improveBtn.onclick=async()=>{
-  const prompt=promptInput.value.trim();
-  if(!prompt){
-    statusBox.textContent="Please enter a prompt first.";
-    return;
-  }
 
-  statusBox.textContent="Improving prompt...";
+/* =========================
+   SAFE JSON RESPONSE
+========================= */
 
-  try{
-    const r=await fetch("/generate-image.js",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({prompt})
-    });
+async function readResponse(response){
 
-    const data=await r.json();
-    if(!r.ok) throw new Error(data.error||"Prompt improvement failed");
-
-    promptInput.value=data.prompt;
-    statusBox.textContent="Prompt improved successfully.";
-  }catch(e){
-    statusBox.textContent=e.message;
-  }
-};
-
-generateBtn.onclick=async()=>{
-  const prompt=promptInput.value.trim();
-
-  if(!prompt){
-    statusBox.textContent="Please enter a prompt.";
-    return;
-  }
-
-  resultBox.innerHTML="";
-  statusBox.textContent="Processing...";
+  const text = await response.text();
 
   try{
 
-    if(mode==="photo"){
-      const r=await fetch("/generate-image.js",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          prompt:prompt+"\nStyle: "+style.value,
-          size:ratio.value
-        })
-      });
+    return JSON.parse(text);
 
-      const data=await r.json();
-      if(!r.ok) throw new Error(data.error||"Image generation failed");
+  }catch(error){
 
-      const img=document.createElement("img");
-      img.src=data.image;
+    throw new Error(
+      "Server returned an invalid response:\n\n" +
+      text.substring(0,500)
+    );
 
-      const link=document.createElement("a");
-      link.href=data.image;
-      link.download="ak-ai-generated.png";
-      link.textContent="Download Image";
+  }
 
-      resultBox.appendChild(img);
-      resultBox.appendChild(link);
+}
 
-      statusBox.textContent="Image generated successfully.";
+
+/* =========================
+   IMPROVE PROMPT
+========================= */
+
+improveBtn.onclick = async () => {
+
+  const prompt =
+    promptInput.value.trim();
+
+
+  if(!prompt){
+
+    statusBox.textContent =
+      "Please enter a prompt first.";
+
+    return;
+
+  }
+
+
+  improveBtn.disabled = true;
+
+  statusBox.textContent =
+    "Improving prompt...";
+
+
+  try{
+
+    const response =
+      await fetch(
+        "/improve-prompt.js",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+            prompt:prompt
+          })
+
+        }
+      );
+
+
+    const data =
+      await readResponse(response);
+
+
+    if(!response.ok){
+
+      throw new Error(
+        data.error ||
+        "Prompt improvement failed"
+      );
+
     }
 
-    else if(mode==="edit"){
-      if(!referenceInput.files[0]){
-        throw new Error("Please select a reference image.");
+
+    promptInput.value =
+      data.prompt;
+
+
+    statusBox.textContent =
+      "Prompt improved successfully.";
+
+  }
+
+  catch(error){
+
+    statusBox.textContent =
+      error.message;
+
+  }
+
+  finally{
+
+    improveBtn.disabled = false;
+
+  }
+
+};
+
+
+/* =========================
+   GENERATE
+========================= */
+
+generateBtn.onclick = async () => {
+
+  const prompt =
+    promptInput.value.trim();
+
+
+  if(!prompt){
+
+    statusBox.textContent =
+      "Please enter a prompt.";
+
+    return;
+
+  }
+
+
+  resultBox.innerHTML = "";
+
+  statusBox.textContent =
+    "Processing...";
+
+
+  generateBtn.disabled = true;
+
+
+  try{
+
+
+    /* =========================
+       AI PHOTO
+    ========================= */
+
+    if(mode === "photo"){
+
+      const response =
+        await fetch(
+          "/generate-image.js",
+          {
+            method:"POST",
+
+            headers:{
+              "Content-Type":
+                "application/json"
+            },
+
+            body:JSON.stringify({
+
+              prompt:
+                prompt +
+                "\nStyle: " +
+                style.value,
+
+              size:
+                ratio.value
+
+            })
+
+          }
+        );
+
+
+      const data =
+        await readResponse(response);
+
+
+      if(!response.ok){
+
+        throw new Error(
+          data.error ||
+          "Image generation failed"
+        );
+
       }
 
-      statusBox.textContent="Image editing is not connected yet.";
+
+      if(!data.image){
+
+        throw new Error(
+          "AI did not return an image."
+        );
+
+      }
+
+
+      const img =
+        document.createElement("img");
+
+      img.src =
+        data.image;
+
+      img.alt =
+        "AK AI Generated Image";
+
+
+      const link =
+        document.createElement("a");
+
+      link.href =
+        data.image;
+
+      link.download =
+        "ak-ai-generated.png";
+
+      link.textContent =
+        "Download Image";
+
+
+      resultBox.appendChild(img);
+
+      resultBox.appendChild(link);
+
+
+      statusBox.textContent =
+        "Image generated successfully.";
+
     }
 
-    else if(mode==="video"){
-      statusBox.textContent="Video generation provider is not connected yet.";
+
+    /* =========================
+       IMAGE EDIT
+    ========================= */
+
+    else if(mode === "edit"){
+
+      if(!referenceInput.files[0]){
+
+        throw new Error(
+          "Please select a reference image."
+        );
+
+      }
+
+
+      statusBox.textContent =
+        "Image editing provider is not connected yet.";
+
     }
+
+
+    /* =========================
+       AI VIDEO
+    ========================= */
+
+    else if(mode === "video"){
+
+      statusBox.textContent =
+        "Video generation provider is not connected yet.";
+
+    }
+
+
+    /* =========================
+       PROMPT CREATOR
+    ========================= */
 
     else{
-      const r=await fetch("/generate-image.js",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({prompt})
-      });
 
-      const data=await r.json();
-      if(!r.ok) throw new Error(data.error||"Prompt creation failed");
+      const response =
+        await fetch(
+          "/improve-prompt.js",
+          {
+            method:"POST",
 
-      promptInput.value=data.prompt;
-      statusBox.textContent="Professional prompt created.";
+            headers:{
+              "Content-Type":
+                "application/json"
+            },
+
+            body:JSON.stringify({
+              prompt:prompt
+            })
+
+          }
+        );
+
+
+      const data =
+        await readResponse(response);
+
+
+      if(!response.ok){
+
+        throw new Error(
+          data.error ||
+          "Prompt creation failed"
+        );
+
+      }
+
+
+      promptInput.value =
+        data.prompt;
+
+
+      statusBox.textContent =
+        "Professional prompt created.";
+
     }
 
-  }catch(e){
-    statusBox.textContent=e.message;
   }
+
+
+  catch(error){
+
+    statusBox.textContent =
+      error.message;
+
+  }
+
+
+  finally{
+
+    generateBtn.disabled =
+      false;
+
+  }
+
 };
+
 </script>
 
 </body>
