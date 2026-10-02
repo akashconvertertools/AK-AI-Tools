@@ -136,7 +136,7 @@ improveBtn.onclick=async()=>{
   statusBox.textContent="Improving prompt...";
 
   try{
-    const r=await fetch("/api/improve-prompt",{
+    const r=await fetch("/generate-image.js",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({prompt})
@@ -166,7 +166,7 @@ generateBtn.onclick=async()=>{
   try{
 
     if(mode==="photo"){
-      const r=await fetch("/api/generate-image",{
+      const r=await fetch("/generate-image.js",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
@@ -205,7 +205,7 @@ generateBtn.onclick=async()=>{
     }
 
     else{
-      const r=await fetch("/api/improve-prompt",{
+      const r=await fetch("/generate-image.js",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({prompt})
